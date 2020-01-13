@@ -24,9 +24,15 @@ public interface IRedPacketDao {
      * @return    更新记录条数
      */
     public int decreaseRedPacket(Long id);
-//
-//
-//    public RedPacket getRedPacketForUpdate(Long id);
+
+    /**
+     * 使用for update加锁，悲观锁
+     * @param id  红包id
+     * @return    返回红包信息
+     */
+
+
+    public RedPacket getRedPacketForUpdate(Long id);
 //
 //
 //    public int decreaseRedPacketForVersion(@Param("id") Long id, @Param("version") Integer version);
