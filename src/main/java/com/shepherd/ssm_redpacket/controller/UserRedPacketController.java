@@ -27,7 +27,10 @@ public class UserRedPacketController {
         //int result = userRedPacketService.grapRedPacket(redPacketId, userId);
 
         //第二种方法：加乐观锁，版本控制
-        int result = userRedPacketService.grapRedPacketForVersion(redPacketId, userId);
+        //int result = userRedPacketService.grapRedPacketForVersion(redPacketId, userId);
+
+        //第三种办法：使用redis抢红包
+        Long result = userRedPacketService.grapRedPacketByRedis(redPacketId, userId);
         Map<String,Object> map = new HashMap<>();
         Boolean flag = result > 0;
         map.put("success",flag);
