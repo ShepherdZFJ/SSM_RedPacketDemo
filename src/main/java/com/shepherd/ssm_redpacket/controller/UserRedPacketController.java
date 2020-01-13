@@ -23,14 +23,16 @@ public class UserRedPacketController {
     @RequestMapping("/grapRedPacket")
     @ResponseBody
     public Map<String ,Object> grapRedPacket(Long redPacketId,Long userId){
-        int result = userRedPacketService.grapRedPacket(redPacketId, userId);
+        //第一种方法：不加锁和加悲观锁
+        //int result = userRedPacketService.grapRedPacket(redPacketId, userId);
+
+        //第二种方法：加乐观锁，版本控制
+        int result = userRedPacketService.grapRedPacketForVersion(redPacketId, userId);
         Map<String,Object> map = new HashMap<>();
         Boolean flag = result > 0;
         map.put("success",flag);
         map.put("message",flag?"抢红包成功":"抢红包失败");
         return map;
-
-
     }
 
 }

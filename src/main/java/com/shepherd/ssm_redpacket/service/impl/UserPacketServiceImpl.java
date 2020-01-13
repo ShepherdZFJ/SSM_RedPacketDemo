@@ -38,4 +38,25 @@ public class UserPacketServiceImpl implements IUserRedPacketService {
         }
         return 0;
     }
+
+    @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
+    public int grapRedPacketForVersion(Long redPacketId, Long userId) {
+        RedPacket redPacket = redPacketDao.getRedPacket(redPacketId);
+        if(redPacket.getStock() > 0){
+            int update = redPacketDao.decreaseRedPacketForVersion(redPacketId, redPacket.getVersion());
+            if(update == 0){
+                return 0;
+            }
+            UserRedPacket userRedPacket = new UserRedPacket();
+            userRedPacket.setRedPacketId(redPacketId);
+            userRedPacket.setUserId(userId);
+            userRedPacket.setAmount(redPacket.getUnitAmount());
+            userRedPacket.setNote("抢红包"+redPacketId);
+            int result = userRedPacketDao.grapRedPacket(userRedPacket);
+            return result;
+        }
+
+        return 0;
+    }
 }

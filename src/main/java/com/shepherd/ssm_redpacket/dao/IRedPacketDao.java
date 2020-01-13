@@ -30,11 +30,9 @@ public interface IRedPacketDao {
      * @param id  红包id
      * @return    返回红包信息
      */
-
-
     public RedPacket getRedPacketForUpdate(Long id);
-//
-//
-//    public int decreaseRedPacketForVersion(@Param("id") Long id, @Param("version") Integer version);
+
+
+    public int decreaseRedPacketForVersion(@Param("id") Long id, @Param("version") Integer version);
 
 }

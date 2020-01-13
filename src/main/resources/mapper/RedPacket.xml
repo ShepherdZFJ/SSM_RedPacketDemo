@@ -28,12 +28,12 @@
     		T_RED_PACKET where id = #{id} for update
     	</select>
 
-    <!--	&lt;!&ndash; 通过版本号扣减抢红包 每更新一次，版本增1， 其次增加对版本号的判断 &ndash;&gt;-->
-    <!--	<update id="decreaseRedPacketForVersion">-->
-    <!--		update T_RED_PACKET-->
-    <!--		set stock = stock - 1,-->
-    <!--		version = version + 1-->
-    <!--		where id = #{id}-->
-    <!--		and version = #{version}-->
-    <!--	</update>-->
+    	<!-- 通过版本号扣减抢红包 每更新一次，版本增1， 其次增加对版本号的判断 -->
+    	<update id="decreaseRedPacketForVersion">
+    		update T_RED_PACKET
+    		set stock = stock - 1,
+    		version = version + 1
+    		where id = #{id}
+    		and version = #{version}
+    	</update>
 </mapper>
