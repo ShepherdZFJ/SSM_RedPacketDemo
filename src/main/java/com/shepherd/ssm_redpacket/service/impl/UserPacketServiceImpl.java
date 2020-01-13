@@ -39,24 +39,71 @@ public class UserPacketServiceImpl implements IUserRedPacketService {
         return 0;
     }
 
+    /**
+     * 为了解决30000次请求完成之后，还剩余大量的红包，加时间戳重入抢红包
+     * @param redPacketId
+     * @param userId
+     * @return
+     */
+    /*
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public int grapRedPacketForVersion(Long redPacketId, Long userId) {
-        RedPacket redPacket = redPacketDao.getRedPacket(redPacketId);
-        if(redPacket.getStock() > 0){
-            int update = redPacketDao.decreaseRedPacketForVersion(redPacketId, redPacket.getVersion());
-            if(update == 0){
+        Long start = System.currentTimeMillis();
+        while (true) {
+            Long end = System.currentTimeMillis();
+            if(end - start > 100){
                 return 0;
             }
-            UserRedPacket userRedPacket = new UserRedPacket();
-            userRedPacket.setRedPacketId(redPacketId);
-            userRedPacket.setUserId(userId);
-            userRedPacket.setAmount(redPacket.getUnitAmount());
-            userRedPacket.setNote("抢红包"+redPacketId);
-            int result = userRedPacketDao.grapRedPacket(userRedPacket);
-            return result;
+            RedPacket redPacket = redPacketDao.getRedPacket(redPacketId);
+            if (redPacket.getStock() > 0) {
+                int update = redPacketDao.decreaseRedPacketForVersion(redPacketId, redPacket.getVersion());
+                if (update == 0) {
+                    continue;
+                }
+                UserRedPacket userRedPacket = new UserRedPacket();
+                userRedPacket.setRedPacketId(redPacketId);
+                userRedPacket.setUserId(userId);
+                userRedPacket.setAmount(redPacket.getUnitAmount());
+                userRedPacket.setNote("抢红包" + redPacketId);
+                int result = userRedPacketDao.grapRedPacket(userRedPacket);
+                return result;
+            }else{
+                return 0;
+            }
         }
+    }
+     */
 
+    /**
+     * 为了解决30000次请求完成之后，还剩余大量的红包，加时间戳重入抢红包
+     * @param redPacketId
+     * @param userId
+     * @return
+     */
+    @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
+    public int grapRedPacketForVersion(Long redPacketId, Long userId) {
+        for (int i = 0; i < 10; i++) {
+            RedPacket redPacket = redPacketDao.getRedPacket(redPacketId);
+            if (redPacket.getStock() > 0) {
+                int update = redPacketDao.decreaseRedPacketForVersion(redPacketId, redPacket.getVersion());
+                if (update == 0) {
+                    continue;
+                }
+                UserRedPacket userRedPacket = new UserRedPacket();
+                userRedPacket.setRedPacketId(redPacketId);
+                userRedPacket.setUserId(userId);
+                userRedPacket.setAmount(redPacket.getUnitAmount());
+                userRedPacket.setNote("抢红包" + redPacketId);
+                int result = userRedPacketDao.grapRedPacket(userRedPacket);
+                return result;
+            } else {
+                return 0;
+            }
+        }
         return 0;
     }
+
+
 }
