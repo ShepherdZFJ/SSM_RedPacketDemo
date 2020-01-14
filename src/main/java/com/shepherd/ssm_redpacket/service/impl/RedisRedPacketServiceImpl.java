@@ -41,6 +41,10 @@ public class RedisRedPacketServiceImpl implements IRedisRedPacketService {
         System.err.println("开始保存数据");
         Long start = System.currentTimeMillis();
         // 获取列表操作对象
+        /**
+         * 注意：在实例化redisTemplate对象时必须添加相应的泛型，不然下面ops无法成功操作相关方法
+         * 即：private RedisTemplate<String,String> redisTemplate = null 而不能写成private RedisTemplate redisTemplate = null
+         */
         BoundListOperations ops = redisTemplate.boundListOps(PREFIX + redPacketId);
         Long size = ops.size();
 //        Long s = redisTemplate.opsForList().size("red_packet_list_1");
